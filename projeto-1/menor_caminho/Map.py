@@ -7,7 +7,7 @@ class Map:
         csv_file = open(filename, mode='r')
         self.paises = list(csv.DictReader(csv_file))
         self.numero_paises = len(self.paises)
-        self.next = self.__create_next()
+        self.next_dict = self.__create_next()
 
         
     # Verifica se existe conexao direta entre os dois paises
@@ -30,7 +30,7 @@ class Map:
         return 1.1*sqrt(lat+lng)
 
     # Obtem pais a partir do id
-    def get_pais(self,id):
+    def get_pais_id(self,id):
         return self.paises[int(id)-1]
     
     # Cria um dicionario de proximos elementos, junto ja adiciona o custo ate eles
@@ -41,15 +41,29 @@ class Map:
             # range maximo de possivel conexao de acordo com criterio
             for i in range(-2,3):
                 if i != 0 and id+i > 0 and id+i <= self.numero_paises:
-                    outro_pais = self.get_pais(id+i)
+                    outro_pais = self.get_pais_id(id+i)
                     # verifica se estao conectados
                     if self.is_connected(pais, outro_pais):
                         # adiciona ao dicionario
                         if next.get(id) == None:
-                            next[id] = [{"id":id+i,"dist":self.distance(pais, outro_pais)}]
+                            next[id] = [outro_pais]
                         else:
-                            next[id].append({"id":id+i,"dist":self.distance(pais, outro_pais)})
+                            next[id].append(outro_pais)
         return next
+
+    # Obtem pais a partir do nome
+    def get_pais_city(self, city):
+        for pais in self.paises:
+            if pais["city"] == city:
+                return pais
+        return None
+
+    # Todos os paises conectados
+    def next(self, pais):
+        id = int(pais["id"])
+        return self.next_dict[id]
+    
+
 
 
 # Exemplicacao de uso
