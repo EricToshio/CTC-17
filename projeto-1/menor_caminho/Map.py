@@ -5,15 +5,13 @@ class Map:
 ## Classe responsavel por lidar com os dados do "csv"
     def __init__(self, filename: str):
         csv_file = open(filename, mode='r')
-        self.paises = list(csv.DictReader(csv_file))
-        self.numero_paises = len(self.paises)
+        self.cidades = list(csv.DictReader(csv_file))
+        self.numero_cidades = len(self.cidades)
         self.next_dict = self.__create_next()
 
         
-    # Verifica se existe conexao direta entre os dois paises
-    def is_connected(self, pais1, pais2) -> bool:
-        id1 = int(pais1["id"])
-        id2 = int(pais2["id"])
+    # Verifica se existe conexao direta entre os duas cidades
+    def is_connected(self, id1: int, id2: int) -> bool:
         diff = abs(id1-id2)
         if diff > 2:
             return False
@@ -23,52 +21,54 @@ class Map:
             return True
         return False
     
-    # Calcula distancia entre dois paises
-    def distance(self, pais1, pais2) -> float:
-        lat = (float(pais1["lat"])-float(pais2["lat"]))**2
-        lng = (float(pais1["lng"])-float(pais2["lng"]))**2
-        return 1.1*sqrt(lat+lng)
+    # Calcula distancia real entre duas cidades
+    def distance(self, id1, id2) -> float:
+        cidade1 = self.get_cidade_id(id1)
+        cidade2 = self.get_cidade_id(id2)
+        lat = (float(cidade1["lat"])-float(cidade2["lat"]))**2
+        lng = (float(cidade1["lng"])-float(cidade2["lng"]))**2
+        return sqrt(lat+lng)
+    # Custo do caminho, caso exista
+    def cost(self, id1, id2) -> float:
+        return 1.1*self.distance(id1,id2)
 
-    # Obtem pais a partir do id
-    def get_pais_id(self,id):
-        return self.paises[int(id)-1]
+    # Obtem cidade a partir do id
+    def get_cidade_id(self,id):
+        return self.cidades[int(id)-1]
     
-    # Cria um dicionario de proximos elementos, junto ja adiciona o custo ate eles
+    # Cria um dicionario de proximos id
     def __create_next(self) -> dict:
         next = {}
-        for pais in self.paises:
-            id = int(pais["id"])
+        for cidade in self.cidades:
+            id = int(cidade["id"])
             # range maximo de possivel conexao de acordo com criterio
             for i in range(-2,3):
-                if i != 0 and id+i > 0 and id+i <= self.numero_paises:
-                    outro_pais = self.get_pais_id(id+i)
+                if i != 0 and id+i > 0 and id+i <= self.numero_cidades:
+                    outro_cidade = self.get_cidade_id(id+i)
                     # verifica se estao conectados
-                    if self.is_connected(pais, outro_pais):
+                    if self.is_connected(int(cidade["id"]), int(outro_cidade["id"])):
                         # adiciona ao dicionario
                         if next.get(id) == None:
-                            next[id] = [outro_pais]
+                            next[id] = [int(outro_cidade["id"])]
                         else:
-                            next[id].append(outro_pais)
+                            next[id].append(int(outro_cidade["id"]))
         return next
 
-    # Obtem pais a partir do nome
-    def get_pais_city(self, city):
-        for pais in self.paises:
-            if pais["city"] == city:
-                return pais
+    # Obtem id do cidade a partir do nome
+    def get_id_city_name(self, nome_cidade):
+        for cidade in self.cidades:
+            if cidade["city"] == nome_cidade:
+                return int(cidade["id"])
         return None
 
-    # Todos os paises conectados
-    def next(self, pais):
-        id = int(pais["id"])
+    # Todos os cidades conectados
+    def next(self, id):
         return self.next_dict[id]
-    
-
 
 
 # Exemplicacao de uso
 if __name__ == "__main__":
     mapa = Map('australia.csv')
-    for pais in mapa.paises:
-        print(pais)
+    for cidade in mapa.cidades:
+        print(cidade)
 
