@@ -2,6 +2,9 @@ from menor_caminho.Map import Map
 import heapq
 mapa = Map('menor_caminho/australia.csv')
 
+from blocos_deslizantes.Puzzle import *
+from blocos_deslizantes.main import *
+
 def Zero(*args):
     return 0
 
@@ -18,12 +21,12 @@ class Node:
 
 class Search:
     def __init__(self, initial, next_states, goal, h, g = Zero):
-        self.g = g                     #function g          : custo real para chegar ao estado
-        self.h = h                     #function h          : custo estimado minimo
-        self.goal = goal               #goal state          : estado objetivo
-        self.initial = initial         #inital state        : estado inicial
-        self.next_states = next_states #function next_states: retorna o array dos proximos estados
-        self.path = [initial]          #array path          : vetor do caminho a percorrer 
+        self.g = g                      #function g          : custo real para chegar ao estado
+        self.h = h                      #function h          : custo estimado minimo
+        self.goal = goal                #goal state          : estado objetivo
+        self.initial = initial          #inital state        : estado inicial
+        self.next_states = next_states  #function next_states: retorna o array dos proximos estados
+        self.path = [initial]           #array path          : vetor do caminho a percorrer 
     
 
     def execute(self):
@@ -82,6 +85,20 @@ class Search:
 
 if __name__ == "__main__":
     # menor_caminho Greedy
-    Search(initial=mapa.get_id_city_name("Alice Springs"), next_states=mapa.next, goal= mapa.get_id_city_name("Yulara"), h = mapa.distance).execute()
+    # Search(initial=mapa.get_id_city_name("Alice Springs"), next_states=mapa.next, goal= mapa.get_id_city_name("Yulara"), h = mapa.distance).execute()
     # menor_caminho A*
-    Search(initial=mapa.get_id_city_name("Alice Springs"), next_states=mapa.next, goal= mapa.get_id_city_name("Yulara"), h = mapa.distance, g = mapa.distance).execute() 
+    # Search(initial=mapa.get_id_city_name("Alice Springs"), next_states=mapa.next, goal= mapa.get_id_city_name("Yulara"), h = mapa.distance, g = mapa.distance).execute() 
+
+
+
+#  estado inicial: eh um noh 
+#  estado final: o que eh desejado 
+#  forneco g, h 
+#  forneco funcao de retornar os proximos nos
+
+    a = Puzzle(9)
+    goal = matr_to_str(a.goal_node.state)
+    initial = matr_to_str(a.initial_node.state)
+    solution = Search(initial=initial, next_states=next_states, goal=goal, h=h, g=g).execute() 
+
+    Game(solution)
