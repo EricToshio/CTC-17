@@ -16,10 +16,11 @@ class Block:
         if value == 0:
             self.backSurf.fill(BLACK)
         else:
-            self.backSurf.fill(RED)
+            self.backSurf.fill(WHITE)
         self.blockRect = self.backSurf.get_rect()
         left_corner = (self.blockRect.centerx - number.get_width()/2 , self.blockRect.centery - number.get_height()/2)
-        self.backSurf.blit(number, left_corner)
+        if value != 0:
+            self.backSurf.blit(number, left_corner)
         self.blockRect.topleft = initial_position
     
     def go_to(self, new_position):
@@ -51,7 +52,7 @@ class Board:
         for i in range(size):
             row = []
             for j in range(size):
-                row.append(Block(100, state[i][j], self.positions[value]))
+                row.append(Block(99, state[i][j], self.positions[value]))
                 value += 1
             blocks.append(row)
         return blocks
@@ -69,39 +70,18 @@ class Board:
             for block in blocks_row:
                 surface_destiny.blit(block.backSurf, block.blockRect)
 
-    # def do_move(self, direction):
-    #     origin = self.void_position
-    #     destiny = (0,0)
-    #     if direction == "U":
-    #         destiny = (origin[0]-1,origin[1])
-    #     elif direction == "D":
-    #         destiny = (origin[0]+1,origin[1])
-    #     elif direction == "R":
-    #         destiny = (origin[0],origin[1]+1)
-    #     elif direction == "L":
-    #         destiny = (origin[0],origin[1]-1)
-    #     if destiny[0] < 0 or destiny[0] >= self.size or destiny[1] < 0 or destiny[1] >= self.size:
-    #         print("Invalid move!")
-    #         return 
-        
-    #     origin_position = self.blocks[origin[0]][origin[1]].blockRect.topleft 
-    #     destiny_position = self.blocks[destiny[0]][destiny[1]].blockRect.topleft
-
-    #     self.blocks[origin[0]][origin[1]].go_to(destiny_position)
-    #     self.blocks[destiny[0]][destiny[1]].go_to(origin_position)
-    #     self.blocks[origin[0]][origin[1]],self.blocks[destiny[0]][destiny[1]] = self.blocks[destiny[0]][destiny[1]], self.blocks[origin[0]][origin[1]]
-
-
 class Game:
     def __init__(self, states):
         # set up pygame
         pygame.init()
 
+        self.clock = pygame.time.Clock()
+
         # set up the window
         self.windowSurface = pygame.display.set_mode((900, 900), 0, 32)
         pygame.display.set_caption('Hello world!')
 
-        self.windowSurface.fill(WHITE)
+        self.windowSurface.fill(BLACK)
 
         state_index = 0
         self.board = Board(9, states[state_index])
@@ -114,7 +94,8 @@ class Game:
                     pygame.quit()
                     sys.exit()
             self.draw()
-            pygame.time.wait(1000)
+            # pygame.time.wait(1000)
+            self.clock.tick(1)
             state_index = state_index + 1 if state_index < len(states)-1 else state_index
         
     def draw(self):
