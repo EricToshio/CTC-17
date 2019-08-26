@@ -90,12 +90,13 @@ if __name__ == "__main__":
     # Search(initial=mapa.get_id_city_name("Alice Springs"), next_states=mapa.next, goal= mapa.get_id_city_name("Yulara"), h = mapa.distance).execute()
     # menor_caminho A*
     a = Search(initial=mapa.get_id_city_name("Alice Springs"), next_states=mapa.next, goal= mapa.get_id_city_name("Yulara"), h = mapa.distance, g = mapa.distance).execute() 
-    MapDraw(mapa.cidades, a)
+    # MapDraw(mapa.cidades, a)
 
+    # Custo do caminho
+    print("Custo total:", mapa.path_cost(a))
 
     # a = Puzzle(9)
     # goal = matr_to_str(a.goal_node.state)
     # initial = matr_to_str(a.initial_node.state)
     # solution = Search(initial=initial, next_states=next_states, goal=goal, h=h, g=g).execute() 
-
     # Game(solution)

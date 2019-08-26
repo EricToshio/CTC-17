@@ -28,6 +28,15 @@ class Map:
         lat = (float(cidade1["lat"])-float(cidade2["lat"]))**2
         lng = (float(cidade1["lng"])-float(cidade2["lng"]))**2
         return sqrt(lat+lng)
+    
+    # Calcula o custo do caminho
+    def path_cost(self,path:list)-> float:
+        total = 0
+        num_city = len(path)
+        for i in range(num_city-1):
+            total += self.cost(path[i], path[i+1])
+        return total
+
     # Custo do caminho, caso exista
     def cost(self, id1, id2) -> float:
         return 1.1*self.distance(id1,id2)
