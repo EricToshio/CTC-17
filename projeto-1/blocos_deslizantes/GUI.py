@@ -7,6 +7,7 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
+SIZE_OF_SQUARE = 100
 
 class Block:
     def __init__(self, dimension, value, initial_position):
@@ -52,7 +53,7 @@ class Board:
         for i in range(size):
             row = []
             for j in range(size):
-                row.append(Block(99, state[i][j], self.positions[value]))
+                row.append(Block(SIZE_OF_SQUARE-1, state[i][j], self.positions[value]))
                 value += 1
             blocks.append(row)
         return blocks
@@ -62,7 +63,7 @@ class Board:
         positions = []
         for i in range(size):
             for j in range(size):
-                positions.append((j*100, i*100))
+                positions.append((j*SIZE_OF_SQUARE, i*SIZE_OF_SQUARE))
         return positions
     
     def draw_board(self, surface_destiny):
@@ -72,23 +73,19 @@ class Board:
 
 class Game:
     def __init__(self, states):
+        self.size = int(len(states[0].split(','))**(1/2))
+        size_of_window = SIZE_OF_SQUARE * self.size
         # set up pygame
         pygame.init()
-
         self.clock = pygame.time.Clock()
-
         # set up the window
-        self.windowSurface = pygame.display.set_mode((900, 900), 0, 32)
-        pygame.display.set_caption('Hello world!')
-
+        self.windowSurface = pygame.display.set_mode((size_of_window, size_of_window), 0, 32)
+        pygame.display.set_caption('Blocos deslizantes')
         self.windowSurface.fill(BLACK)
-
         state_index = 0
-        self.board = Board(9, states[state_index])
-
         while True:
             # draw the window onto the screen
-            self.board = Board(9,states[state_index])
+            self.board = Board(self.size, states[state_index])
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()

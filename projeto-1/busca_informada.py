@@ -2,10 +2,10 @@ from menor_caminho.Map import Map
 import heapq
 mapa = Map('menor_caminho/australia.csv')
 
-from blocos_deslizantes.Puzzle import *
-from blocos_deslizantes.main import *
+from blocos_deslizantes import Puzzle as puzzle_logic
+from blocos_deslizantes import GUI as puzzle_gui
 
-from menor_caminho.main import *
+from menor_caminho.GUI import *
 
 def Zero(*args):
     return 0
@@ -22,7 +22,11 @@ class Node:
 
 
 class Search:
-    def __init__(self, initial, next_states, goal, h, g = Zero):
+    def __init__(self, initial, next_states, goal, h, g = None):
+        self.type = "A star"
+        if not g:
+            g = Zero
+            self.type = "Greedy"
         self.g = g                      #function g          : custo real para chegar ao estado
         self.h = h                      #function h          : custo estimado minimo
         self.goal = goal                #goal state          : estado objetivo
@@ -80,7 +84,7 @@ class Search:
             actual_node = actual_node.previous
         path.append(actual_node.state)
         path.reverse()
-        print("Solucao achada:", len(path))
+        print("Solucao achada({}): {}".format(self.type, len(path)))
 
         return path
 
@@ -89,14 +93,20 @@ if __name__ == "__main__":
     # menor_caminho Greedy
     # Search(initial=mapa.get_id_city_name("Alice Springs"), next_states=mapa.next, goal= mapa.get_id_city_name("Yulara"), h = mapa.distance).execute()
     # menor_caminho A*
-    a = Search(initial=mapa.get_id_city_name("Alice Springs"), next_states=mapa.next, goal= mapa.get_id_city_name("Yulara"), h = mapa.distance, g = mapa.distance).execute() 
+    # a = Search(initial=mapa.get_id_city_name("Alice Springs"), next_states=mapa.next, goal= mapa.get_id_city_name("Yulara"), h = mapa.distance, g = mapa.distance).execute() 
     # MapDraw(mapa.cidades, a)
 
     # Custo do caminho
-    print("Custo total:", mapa.path_cost(a))
+    # print("Custo total:", mapa.path_cost(a))
 
-    # a = Puzzle(9)
-    # goal = matr_to_str(a.goal_node.state)
-    # initial = matr_to_str(a.initial_node.state)
-    # solution = Search(initial=initial, next_states=next_states, goal=goal, h=h, g=g).execute() 
-    # Game(solution)
+    # ------ inicio blocos deslizantes ---------------
+    node = puzzle_logic.Node() # passe no construtor o tamanho do board. O padrao eh 9
+    goal_state = node.get_state()
+    node.shuffle() # passe no construtor uma tupla indicando minimo e maximo do numero de movimentos. O padrao eh (30, 50)
+    initial_state = node.get_state()
+    (g,h,next_states) = node.get_evaluation_functions()
+    solution = Search(initial=initial_state, next_states=next_states, goal=goal_state, h=h, g=g).execute() 
+    puzzle_gui.Game(solution)
+    # solution = Search(initial=initial_state, next_states=next_states, goal=goal_state, h=h).execute() 
+    # puzzle_gui.Game(solution)
+    # ------ fim blocos deslizantes ------------------
