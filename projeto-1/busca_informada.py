@@ -4,6 +4,7 @@ mapa = Map('menor_caminho/australia.csv')
 
 from blocos_deslizantes import Puzzle as puzzle_logic
 from blocos_deslizantes import GUI as puzzle_gui
+from blocos_deslizantes import test_cases as tc
 
 from menor_caminho.GUI import *
 
@@ -102,7 +103,8 @@ if __name__ == "__main__":
     # ------ inicio blocos deslizantes ---------------
     node = puzzle_logic.Node() # passe no construtor o tamanho do board. O padrao eh 9
     goal_state = node.get_state()
-    node.shuffle() # passe no construtor uma tupla indicando minimo e maximo do numero de movimentos. O padrao eh (30, 50)
+    # node.shuffle() # passe no construtor uma tupla indicando minimo e maximo do numero de movimentos. O padrao eh (30, 50)
+    node.load_state(tc.test_case["not_so_easy"])
     initial_state = node.get_state()
     (g,h,next_states) = node.get_evaluation_functions()
     solution = Search(initial=initial_state, next_states=next_states, goal=goal_state, h=h, g=g).execute() 
