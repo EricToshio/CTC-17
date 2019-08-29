@@ -19,6 +19,12 @@ class Node:
         state[-1][-1] = 0
         print(state)
         return state
+    
+    def load_state(self, state):
+        self.state = self.str_to_matr(state)
+        if self.size != len(self.state):
+            print("!! size parameter changed: {} to {}".format(self.size, len(self.state)))
+            self.size = len(self.state)
 
     def do_move(self, move, shuffle = False):
         origin = self.void_position
