@@ -7,7 +7,7 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
-SIZE_OF_SQUARE = 100
+SIZE_OF_SQUARE = 50
 
 class Block:
     def __init__(self, dimension, value, initial_position):

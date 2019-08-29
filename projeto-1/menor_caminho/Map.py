@@ -73,7 +73,16 @@ class Map:
     # Todos os cidades conectados
     def next(self, id):
         return self.next_dict[id]
-
+    
+    # Cria string representando o caminho
+    def show_path(self, path:list)->str:
+        if len(path)==0:
+            return ""
+        sol = str(path[0])
+        for i in range(1, len(path)):
+            sol = sol +"->"+str(path[i])
+        
+        return sol
 
 # Exemplicacao de uso
 if __name__ == "__main__":

@@ -17,6 +17,7 @@ class Node:
                 row.append(i*self.size + j + 1)
             state.append(row)
         state[-1][-1] = 0
+        print(state)
         return state
 
     def do_move(self, move, shuffle = False):
