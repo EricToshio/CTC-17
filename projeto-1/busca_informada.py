@@ -88,37 +88,42 @@ class Search:
 
         return path
 
-# ------ inicio menor caminho --------------------
-# 1) Menor caminho utilizando Greedy
+
+
 def Menor_caminho_utilizando_Greedy():
     path = Search(initial=mapa.get_id_city_name("Alice Springs"), next_states=mapa.next, goal= mapa.get_id_city_name("Yulara"), h = mapa.distance).execute()
     print("Custo total:", mapa.path_cost(path))
     print("Caminho achado:\n",mapa.show_path(path))
     MapDraw(mapa.cidades, path)
-# 2) Menor caminho utilizando A*
+
 def Menor_caminho_utilizando_A():
     path = Search(initial=mapa.get_id_city_name("Alice Springs"), next_states=mapa.next, goal= mapa.get_id_city_name("Yulara"), h = mapa.distance, g = mapa.cost).execute() 
     print("Custo total:", mapa.path_cost(path))
     print("Caminho achado:\n",mapa.show_path(path))
     MapDraw(mapa.cidades, path)
-# ------ fim menor caminho -----------------------
 
 if __name__ == "__main__":
-    
+    # ------ inicio menor caminho --------------------
+    # 1) Menor caminho utilizando Greedy:
     # Menor_caminho_utilizando_Greedy()
+    # 2) Menor caminho utilizando A*:
     # Menor_caminho_utilizando_A()
-
-
+    # ------ fim menor caminho -----------------------
     # ------ inicio blocos deslizantes ---------------
-    # node = puzzle_logic.Node() # passe no construtor o tamanho do board. O padrao eh 9
-    # goal_state = node.get_state()
+    node = puzzle_logic.Node() # passe no construtor o tamanho do board. O padrao eh 9
+    goal_state = node.get_state()
+    #### Escolha o caso a ser executado: descomente somente uma das tres linha abaixo####
     # node.shuffle() # passe no construtor uma tupla indicando minimo e maximo do numero de movimentos. O padrao eh (30, 50)
     # node.load_state(tc.test_case["easy"])
-    # initial_state = node.get_state()
-    # (g,h,next_states) = node.get_evaluation_functions()
+    # node.load_state(tc.test_case["not_so_easy"])
+    initial_state = node.get_state()
+    (g,h,next_states) = node.get_evaluation_functions()
+    # 1) Blocos deslizantes utilizando Greedy:
     # solution = Search(initial=initial_state, next_states=next_states, goal=goal_state, h=h, g=g).execute() 
     # puzzle_gui.Game(solution)
+    # 2) Menor deslizantes utilizando A*:
     # solution = Search(initial=initial_state, next_states=next_states, goal=goal_state, h=h).execute() 
     # puzzle_gui.Game(solution)
     # ------ fim blocos deslizantes ------------------
+
     pass
