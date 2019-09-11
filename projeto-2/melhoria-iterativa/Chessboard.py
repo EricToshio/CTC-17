@@ -3,8 +3,11 @@ import math
 import copy
 
 class Chessboard:
-    def __init__(self, size):
+    def __init__(self, size, optimization = False, super_optimization = False):
         self.size = size
+        # preferencia da super otimizacao
+        self.optimization = optimization and not super_optimization
+        self.super_optimization = super_optimization
         # Cria tabuleiro
         ## 0 => sem rainha
         ## 1 => com rainha
@@ -15,14 +18,38 @@ class Chessboard:
         # Coloca as rainhas em posicoes aleatorias
         self.random()
 
+
+
+
     def random(self):
         queens = 0
-        while queens != self.size:
-            x = random.randint(0, self.size - 1)
-            y = random.randint(0, self.size - 1)
-            if self.board[x][y] == 0:
-                self.board[x][y] = 1
+        if self.optimization:
+            # Somente 1 rainha por linha 
+            while queens != self.size:
+                y = random.randint(0, self.size - 1)
+                self.board[queens][y] = 1
                 queens +=1
+
+        elif self.super_optimization:
+            # Somente 1 rainha por linha e por coluna
+            used = set()
+            while queens != self.size:
+                y = random.randint(0, self.size - 1)
+                if y not in used:
+                    self.board[queens][y] = 1
+                    queens +=1
+                    used.add(y)
+
+        else:
+            # Qualquer posicao
+            while queens != self.size:
+                x = random.randint(0, self.size - 1)
+                y = random.randint(0, self.size - 1)
+                if self.board[x][y] == 0:
+                    self.board[x][y] = 1
+                    queens +=1
+
+
 
 
     def next_boards(self, board):
@@ -32,28 +59,48 @@ class Chessboard:
             for y in range(self.size):
                 if board[x][y] == 1:
                     queens.add((x,y))
-        # Encontra todos os possiveis proximos estados
-        # onde se muda a posicao de uma rainha somente
         next_states = []
+        used = set()
         for queen in queens:
             new_board = copy.deepcopy(board)
             new_board[queen[0]][queen[1]] = 0
 
-            for x in range(self.size):
+            if self.optimization:
+                # Possiveis estados mudando somente uma rainha
+                # As mudancas sao feitas somentes pelas linhas
+                x = queen[0]
                 for y in range(self.size):
-                    if (x,y) not in queens:
+                    if y != queen[1]:
                         new_board_queen = copy.deepcopy(new_board)
                         new_board_queen[x][y] = 1
                         next_states.append(new_board_queen)
+            elif self.super_optimization:
+                # Possiveis estados mudando duas rainha
+                # As mudancas sao feitas de forma a rainhas
+                # continuarem no mesma linha porem trocam o
+                # valor da coluna
+                used.add(queen)
+                x = queen[0]
+                for other_queen in queens:
+                    if other_queen not in used:
+                        new_board_queen = copy.deepcopy(new_board)
+                        new_board_queen[other_queen[0]][other_queen[1]] = 0
+                        new_board_queen[other_queen[0]][queen[1]] = 1
+                        new_board_queen[x][other_queen[1]] = 1
+                        next_states.append(new_board_queen)
+                    
+            else:
+                # Encontra todos os possiveis proximos estados
+                # onde se muda a posicao de uma rainha somente
+                # para qualque posicao
+                for x in range(self.size):
+                    for y in range(self.size):
+                        if (x,y) not in queens:
+                            new_board_queen = copy.deepcopy(new_board)
+                            new_board_queen[x][y] = 1
+                            next_states.append(new_board_queen)
         return next_states
 
-    def update_board(self, board):
-        self.board = board
-        self.queens = set()
-        for x in range(self.size):
-            for y in range(self.size):
-                if board[x][y] == 1:
-                    self.queens.add((x,y))
 
     def evaluate(self, board):
 
@@ -84,7 +131,13 @@ class Chessboard:
             if next_value > value_best:
                 best = next_board
                 value_best = next_value
-        return best 
+        return best
+    
+    def print_board(self, board):
+        for x in range(self.size):
+            for y in range(self.size):
+                print(board[x][y], end=" ")
+            print() 
     
     def __evaluateIteration__(self, queen, add, board):
         add_x = add[0]
