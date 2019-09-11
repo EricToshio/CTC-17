@@ -17,6 +17,6 @@ class HillClimbing:
 
 
 if __name__ == "__main__":
-    board = Chessboard(5)
+    board = Chessboard(10)
     sol = HillClimbing(initial_node=board.board, higest_next=board.higest_next, evaluate=board.evaluate).find_best()
     print(sol,board.evaluate(sol))
