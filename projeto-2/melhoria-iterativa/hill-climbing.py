@@ -15,10 +15,11 @@ def timeit(method):
     return timed
 
 class HillClimbing:
-    def __init__(self, initial_node, higest_next, evaluate):
+    def __init__(self, initial_node, higest_next, evaluate, real):
         self.node = initial_node
         self.higest_next = higest_next
         self.evaluate = evaluate
+        self.real = real
     @timeit
     def find_best(self):
         found  = False
@@ -27,13 +28,16 @@ class HillClimbing:
             if self.evaluate(next) > self.evaluate(self.node):
                 self.node = next
             else:
-                found = True
+                if self.real(self.node)==0:
+                    found = True
+                else:
+                    self.node = next
         return self.node
 
 
 if __name__ == "__main__":
-    board = Chessboard(10,super_optimization=True)
-    sol = HillClimbing(initial_node=board.board, higest_next=board.higest_next, evaluate=board.evaluate).find_best()
+    board = Chessboard(25,super_optimization=True)
+    sol = HillClimbing(initial_node=board.board, higest_next=board.higest_next, evaluate=board.evaluate,real =board.real_cost).find_best()
     
     board.print_board(sol)
-    print("custo:",board.evaluate(sol))
+    print("custo:",board.real_cost(sol))

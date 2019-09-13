@@ -105,6 +105,7 @@ class Chessboard:
     def evaluate(self, board):
 
         cost = 0
+        extra_cost = 0
         queens = set()
         for x in range(self.size):
             for y in range(self.size):
@@ -120,6 +121,33 @@ class Chessboard:
             cost += self.__evaluateIteration__(queen, [1,-1], board)
             cost += self.__evaluateIteration__(queen, [-1,1], board)
             cost += self.__evaluateIteration__(queen, [-1,-1], board)
+            for other_queen in queens:
+                if other_queen != queen:
+                    diff_x = (queen[0]-other_queen[0])**2
+                    diff_y = (queen[1]-other_queen[1])**2
+                    extra_cost += diff_x + diff_y
+        return -200*(cost**2) + extra_cost/(self.size**2)
+    
+    def real_cost(self, board):
+
+        cost = 0
+
+        queens = set()
+        for x in range(self.size):
+            for y in range(self.size):
+                if board[x][y] == 1:
+                    queens.add((x,y))
+        
+        for queen in queens:
+            cost += self.__evaluateIteration__(queen, [1,0], board)
+            cost += self.__evaluateIteration__(queen, [-1,0], board)
+            cost += self.__evaluateIteration__(queen, [0,1], board)
+            cost += self.__evaluateIteration__(queen, [0,-1], board)
+            cost += self.__evaluateIteration__(queen, [1,1], board)
+            cost += self.__evaluateIteration__(queen, [1,-1], board)
+            cost += self.__evaluateIteration__(queen, [-1,1], board)
+            cost += self.__evaluateIteration__(queen, [-1,-1], board)
+
         return -cost
     
     def higest_next(self, actual_board):
