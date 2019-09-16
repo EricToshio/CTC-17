@@ -98,49 +98,63 @@ def is_valid(N,C,A,Ci,B):
         
         
 def backtrack(N,C,A,Ci,B):
-    #print(N,C,A,Ci,B)
     if None in N:
         add_ind = N.index(None)
+        state = False
         for i in range(5):
             new_N = N.copy()
             new_N[add_ind] = i
             if is_valid(new_N,C,A,Ci,B):
-                backtrack(new_N,C,A,Ci,B)
+                state,x,y,z,w,h = backtrack(new_N,C,A,Ci,B)
+                if state:
+                    return state,x,y,z,w,h 
+        return False, [],[],[],[],[]
     elif None in C:
-        #print(C)
         add_ind = C.index(None)
         for i in range(5):
             new_C = C.copy()
             new_C[add_ind] = i
             if is_valid(N,new_C,A,Ci,B):
-                backtrack(N,new_C,A,Ci,B)
+                state,x,y,z,w,h = backtrack(N,new_C,A,Ci,B)
+                if state:
+                    return state,x,y,z,w,h 
+        return False, [],[],[],[],[]
     elif None in A:
         add_ind = A.index(None)
         for i in range(5):
             new_A = A.copy()
             new_A[add_ind] = i
             if is_valid(N,C,new_A,Ci,B):
-                backtrack(N,C,new_A,Ci,B)
+                state,x,y,z,w,h = backtrack(N,C,new_A,Ci,B)
+                if state:
+                    return state,x,y,z,w,h 
+        return False, [],[],[],[],[]
     elif None in Ci:
         add_ind = Ci.index(None)
         for i in range(5):
             new_Ci = Ci.copy()
             new_Ci[add_ind] = i
             if is_valid(N,C,A,new_Ci,B):
-                backtrack(N,C,A,new_Ci,B)
+                state,x,y,z,w,h = backtrack(N,C,A,new_Ci,B)
+                if state:
+                    return state,x,y,z,w,h 
+        return False, [],[],[],[],[]
     elif None in B:
         add_ind = B.index(None)
         for i in range(5):
             new_B = B.copy()
             new_B[add_ind] = i
             if is_valid(N,C,A,Ci,new_B):
-                backtrack(N,C,A,Ci,new_B)
+                state,x,y,z,w,h = backtrack(N,C,A,Ci,new_B)
+                if state:
+                    return state,x,y,z,w,h 
+        return False, [],[],[],[],[]
     else:
-        print_sol(N,C,A,Ci,B)
-        return N,C,A,Ci,B
+        return True,N,C,A,Ci,B
         
 def print_sol(N,C,A,Ci,B):
     for i in range(5):
         print("Casa",i+1,"Nac:",DN[N[i]],"Cor:",DC[C[i]],"Animal:",DA[A[i]],"Cigarro:",DCi[Ci[i]],"Bebida:",DB[B[i]])
 if __name__ == "__main__":
-    backtrack(N,C,A,Ci,B)
+    state,x,y,z,w,h = backtrack(N,C,A,Ci,B)
+    print_sol(x,y,z,w,h)
