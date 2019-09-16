@@ -5,7 +5,7 @@ class State:
         self.numOfRows = 6
         self.numOfColumns = 5
         self.state = {
-            "nacionality": [None for c in range(self.numOfColumns)],
+            "nationality": [None for c in range(self.numOfColumns)],
             "color": [None for c in range(self.numOfColumns)],
             "animal": [None for c in range(self.numOfColumns)],
             "cigarrete": [None for c in range(self.numOfColumns)],
@@ -16,7 +16,7 @@ class State:
     def reset(self):
         self.state = {
             "position": [c+1 for c in range(self.numOfColumns)],
-            "nacionality": [None for c in range(self.numOfColumns)],
+            "nationality": [None for c in range(self.numOfColumns)],
             "color": [None for c in range(self.numOfColumns)],
             "animal": [None for c in range(self.numOfColumns)],
             "cigarrete": [None for c in range(self.numOfColumns)],
@@ -24,7 +24,7 @@ class State:
         }
     
     def printState(self):
-        order = ['position','nacionality','beverage','cigarrete','animal','color']
+        order = ['position','nationality','beverage','cigarrete','animal','color']
         for key in order:
             print("%15s | %15s | %15s | %15s | %15s | %15s" % (key, self.state[key][0], self.state[key][1], self.state[key][2], self.state[key][3], self.state[key][4]))
     
@@ -43,21 +43,21 @@ class State:
     
     def isValidState(self):
         for j in range(self.numOfColumns):
-            if not self.state['nacionality'][j] or not self.state['color'][j]:
+            if not self.state['nationality'][j] or not self.state['color'][j]:
                 continue
-            if (self.state['nacionality'][j] == 'ingles' and self.state['color'][j] != 'vermelha') or (self.state['nacionality'][j] != 'ingles' and self.state['color'][j] == 'vermelha'):
+            if (self.state['nationality'][j] == 'ingles' and self.state['color'][j] != 'vermelha') or (self.state['nationality'][j] != 'ingles' and self.state['color'][j] == 'vermelha'):
                 return False
 
         for j in range(self.numOfColumns):
-            if not self.state['nacionality'][j] or not self.state['animal'][j]:
+            if not self.state['nationality'][j] or not self.state['animal'][j]:
                 continue
-            if (self.state['nacionality'][j] == 'espanhol' and self.state['animal'][j] != 'cachorro') or (self.state['nacionality'][j] != 'espanhol' and self.state['animal'][j] == 'cachorro'):
+            if (self.state['nationality'][j] == 'espanhol' and self.state['animal'][j] != 'cachorro') or (self.state['nationality'][j] != 'espanhol' and self.state['animal'][j] == 'cachorro'):
                 return False
         
         for j in range(self.numOfColumns):
-            if not self.state['position'][j] or not self.state['nacionality'][j]:
+            if not self.state['position'][j] or not self.state['nationality'][j]:
                 continue
-            if (self.state['position'][j] == 1 and self.state['nacionality'][j] != 'noruegues') or (self.state['position'][j] != 1 and self.state['nacionality'][j] == 'noruegues'):
+            if (self.state['position'][j] == 1 and self.state['nationality'][j] != 'noruegues') or (self.state['position'][j] != 1 and self.state['nationality'][j] == 'noruegues'):
                 return False
         
         for j in range(self.numOfColumns):
@@ -79,15 +79,15 @@ class State:
                 return False
         
         for j in range(self.numOfColumns):
-            if not self.state['nacionality'][j] or not self.state['beverage'][j]:
+            if not self.state['nationality'][j] or not self.state['beverage'][j]:
                 continue
-            if (self.state['nacionality'][j] == 'ucraniano' and self.state['beverage'][j] != 'cha') or (self.state['nacionality'][j] != 'ucraniano' and self.state['beverage'][j] == 'cha'):
+            if (self.state['nationality'][j] == 'ucraniano' and self.state['beverage'][j] != 'cha') or (self.state['nationality'][j] != 'ucraniano' and self.state['beverage'][j] == 'cha'):
                 return False
         
         for j in range(self.numOfColumns):
-            if not self.state['nacionality'][j] or not self.state['cigarrete'][j]:
+            if not self.state['nationality'][j] or not self.state['cigarrete'][j]:
                 continue
-            if (self.state['nacionality'][j] == 'japones' and self.state['cigarrete'][j] != 'Parliament') or (self.state['nacionality'][j] != 'japones' and self.state['cigarrete'][j] == 'Parliament'):
+            if (self.state['nationality'][j] == 'japones' and self.state['cigarrete'][j] != 'Parliament') or (self.state['nationality'][j] != 'japones' and self.state['cigarrete'][j] == 'Parliament'):
                 return False
         
         for j in range(self.numOfColumns):
@@ -124,11 +124,11 @@ class State:
             a = True
             b = True
             if self.state['color'][j] and self.state['color'][j] == 'azul':
-                if j < self.numOfColumns - 1 and self.state['nacionality'][j+1]:
-                    if self.state['nacionality'][j+1] != 'noruegues':
+                if j < self.numOfColumns - 1 and self.state['nationality'][j+1]:
+                    if self.state['nationality'][j+1] != 'noruegues':
                         a = False
-                if j > 0 and self.state['nacionality'][j-1]:
-                    if self.state['nacionality'][j-1] != 'noruegues':
+                if j > 0 and self.state['nationality'][j-1]:
+                    if self.state['nationality'][j-1] != 'noruegues':
                         b = False
             if j == 0 and not a:
                 return False
@@ -166,10 +166,10 @@ class State:
 if __name__=='__main__':
     aa = State()
 
-    order = ['beverage','nacionality','cigarrete','color','animal']
+    order = ['beverage','nationality','cigarrete','color','animal']
     domains = {
         'color': list(itertools.permutations(['vermelha','amarela','azul','verde','marfim'])),
-        'nacionality': list(itertools.permutations(['ingles','espanhol','noruegues','ucraniano','japones'])),
+        'nationality': list(itertools.permutations(['ingles','espanhol','noruegues','ucraniano','japones'])),
         'cigarrete': list(itertools.permutations(['chester','Kool','Winston','Lucky','Parliament'])),
         'animal': list(itertools.permutations(['cachorro','raposa','caramujos','cavalo','zebra'])),
         'beverage': list(itertools.permutations(['agua','suco de laranja','cha','cafe','leite'])),
