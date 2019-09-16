@@ -1,5 +1,5 @@
 import itertools 
-
+nos_expandidos = 0
 class State:
     def __init__(self, default='position'):
         self.numOfRows = 6
@@ -177,6 +177,8 @@ if __name__=='__main__':
 
     nodes = [0]
     def solveCSP(depth):
+        global nos_expandidos
+        nos_expandidos += 1
         if depth == len(order):
             return aa.isValidState()
         domain = domains[order[depth]]
@@ -196,3 +198,4 @@ if __name__=='__main__':
     print(aa.isValidState())
     print(nodes[0])
     aa.printState()
+    print("total de nos expandidos", nos_expandidos)

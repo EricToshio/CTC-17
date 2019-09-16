@@ -1,3 +1,4 @@
+nos_espandidos = 0
 '''Variaveis'''
 N = [None]*5
 C = [None]*5
@@ -98,6 +99,8 @@ def is_valid(N,C,A,Ci,B):
         
         
 def backtrack(N,C,A,Ci,B):
+    global nos_espandidos
+    nos_espandidos += 1
     if None in N:
         add_ind = N.index(None)
         state = False
@@ -158,3 +161,4 @@ def print_sol(N,C,A,Ci,B):
 if __name__ == "__main__":
     state,x,y,z,w,h = backtrack(N,C,A,Ci,B)
     print_sol(x,y,z,w,h)
+    print("Total de nos expandidos", nos_espandidos)
