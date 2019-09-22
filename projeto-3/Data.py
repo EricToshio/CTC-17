@@ -1,12 +1,22 @@
 class Data:
     def __init__(self):
+        self.atrib = {}
         self.users = self.read_users("data/users.dat")
         self.movies = self.read_movies("data/movies.dat")
         self.ratings = self.read_ratings("data/ratings.dat")
+        self.possible_atrib()
+
+
+    def possible_atrib(self):
+        self.atrib["Gender"] = set(["F","M"])
+        self.atrib["Age"] = set([1,18,25,35,45,50,56])
+        self.atrib["Occupation"] = set(range(1,21))
+        self.atrib["GenderMovie"] = set(['Action', 'Adventure', 'Animation', "Children's", 'Comedy', 'Crime', 'Documentary', 'Drama', 'Fantasy', 'Film-Noir', 'Horror', 'Musical', 'Mystery', 'Romance', 'Sci-Fi', 'Thriller', 'War', 'Western'])
 
     def read_users(self, path):
         file_user  = open(path, "r")
         users = {}
+
         for user_info in file_user:
             new_user = {}
             user_info_splited = user_info.split("::")
@@ -27,7 +37,7 @@ class Data:
             movie_info_splited = movie_info.split("::")
             movie_ID = int(movie_info_splited[0])
             new_movie["Title"] = movie_info_splited[1]
-            new_movie["Gender"] = set(movie_info_splited[2].split("|"))
+            new_movie["GenderMovie"] = set(movie_info_splited[2].split("|"))
             movies[movie_ID] = new_movie
         file_movie.close()
         return movies
