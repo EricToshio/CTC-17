@@ -34,6 +34,8 @@ class ClassifierDecisionTree:
     def __init__(self, data):
         self.data = data
         self.count = 0
+        self.tree = None
+        self.atribOrder = []
     
     def CreateTree(self, samples, atrib, default):
         # Verifica se existe exemplos
@@ -52,6 +54,7 @@ class ClassifierDecisionTree:
             return Node(value=classification,is_leaf=True)
         # Faz uma nova ramificacao
         best_atr = self.ChooseAtrib(samples,atrib)
+        self.atribOrder.append(best_atr)
         root = Node(value=best_atr)
         new_default = self.GetMode(samples)
         new_atrib = atrib.copy()
@@ -60,16 +63,28 @@ class ClassifierDecisionTree:
             new_samples = self.FilterSamples(samples,best_atr,v)
             root.next[v] = self.CreateTree(new_samples, new_atrib, new_default)
         
+        self.tree = root
         return root
-
-
+    
+    def PredictRating(self, sample):
+        root = self.tree
+        atribInd = 0
+        while not root.is_leaf:
+            a = None
+            try:
+                a = sample[self.atribOrder[atribInd]][0]
+            except:
+                a = sample[self.atribOrder[atribInd]]
+            root = root.next[a]
+            atribInd += 1
+        
+        return root.val
 
     def ChooseAtrib(self,samples,atrib):
         # TO-DO
         # Escolhe o melhor atributo baseado no exemplos
         return atrib[0]
         
-
     def GetMode(self,samples):
         # Escolhe a moda dos exemplos
         count = [0]*6
@@ -101,7 +116,7 @@ def show_tree(tree,intern=0):
 
 if __name__ == "__main__":
     data = Data()
-    training_set, teste_set = data.generate_samples()
+    training_set, test_set = data.generate_samples()
     ###########################################
     # classifier_priori = ClassifierPriori(data)
     # print(classifier_priori.truncated_median)
@@ -110,3 +125,13 @@ if __name__ == "__main__":
     classifier_tree = ClassifierDecisionTree(data)
     tree = classifier_tree.CreateTree(training_set,data.key_atrib,0)
     # show_tree(tree)
+    right = wrong = 0
+    for test in test_set:
+        predictedRating = classifier_tree.PredictRating(test)
+        if predictedRating == test["Rating"]:
+            right += 1
+        else:
+            wrong += 1
+    print("correct predicts: {}".format(right))
+    print("wrong predicts: {}".format(wrong))
+    print("hit rate (%): {}".format(right/(right+wrong)*100))
