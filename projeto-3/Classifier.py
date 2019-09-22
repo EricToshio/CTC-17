@@ -64,24 +64,45 @@ class ClassifierDecisionTree:
     def ChooseAtrib(self,samples,atrib):
         # TO-DO
         # Escolhe o melhor atributo baseado no exemplos
-        return None
+        return atrib[0]
         
 
     def GetMode(self,samples):
-        # TO-DO
         # Escolhe a moda dos exemplos
-        return None
+        count = [0]*6
+        for sample in samples:
+            count[sample["Rating"]] += 1
+        maxi = 0
+        best_rate = 0
+        for rate in range(1,6):
+            if count[rate] > maxi:
+                maxi = count[rate]
+                best_rate = rate
+        return best_rate
         
 
     def FilterSamples(self,samples,atrib,value):
-        # TO-DO
         # Filtra os exemplos de acordo um uma escolha de determinado atributo
-        return None
+        new_samples = []
+        for sample in samples:
+            if sample[atrib] == value:
+                new_samples.append(sample)
+        return new_samples
     
+
+def show_tree(tree,intern=0):
+    print("*"*intern,tree.val)
+    if not tree.is_leaf:
+        for son in tree.next:
+            show_tree(tree.next[son],intern+1)
 
 if __name__ == "__main__":
     data = Data()
-    classifier_priori = ClassifierPriori(data)
-    print(classifier_priori.truncated_median)
-    print(classifier_priori.mode)
-    pass
+    ###########################################
+    # classifier_priori = ClassifierPriori(data)
+    # print(classifier_priori.truncated_median)
+    # print(classifier_priori.mode)
+    ###########################################
+    classifier_tree = ClassifierDecisionTree(data)
+    tree = classifier_tree.CreateTree(data.generate_samples(),data.key_atrib,0)
+    show_tree(tree)

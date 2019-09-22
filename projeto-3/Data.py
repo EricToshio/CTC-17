@@ -5,6 +5,7 @@ class Data:
         self.users = self.read_users("data/users.dat")
         self.movies = self.read_movies("data/movies.dat")
         self.ratings = self.read_ratings("data/ratings.dat")
+        self.key_atrib = list(self.atrib.keys())
 
 
     def possible_atrib(self):
@@ -59,6 +60,19 @@ class Data:
             ratings.append(new_rating)
         file_rating.close()
         return ratings
+    
+    def generate_samples(self):
+        samples = []
+        for rate in self.ratings:
+            new_sample = {}
+            new_sample["Rating"] = rate["Rating"]
+            new_sample["Gender"] = self.users[rate["UserID"]]["Gender"]
+            new_sample["Age"] = self.users[rate["UserID"]]["Age"]
+            new_sample["Occupation"] = self.users[rate["UserID"]]["Occupation"]
+            new_sample["Year"] = self.movies[rate["MovieID"]]["Year"]
+            new_sample["GenderMovie"] = self.movies[rate["MovieID"]]["GenderMovie"]
+            samples.append(new_sample)
+        return samples
 
 
 if __name__ == "__main__":
