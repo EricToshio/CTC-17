@@ -33,10 +33,12 @@ class ClassifierPriori:
 class ClassifierDecisionTree:
     def __init__(self, data):
         self.data = data
+        self.count = 0
     
     def CreateTree(self, samples, atrib, default):
         # Verifica se existe exemplos
         if len(samples) == 0:
+            self.count += 1
             return Node(value=default,is_leaf=True)
         # Verifica se todos os exemplos tem a mesma classificacao
         same_classification = True
@@ -46,6 +48,7 @@ class ClassifierDecisionTree:
                 same_classification = False
                 break
         if same_classification:
+            self.count += 1
             return Node(value=classification,is_leaf=True)
         # Faz uma nova ramificacao
         best_atr = self.ChooseAtrib(samples,atrib)
@@ -98,11 +101,12 @@ def show_tree(tree,intern=0):
 
 if __name__ == "__main__":
     data = Data()
+    training_set, teste_set = data.generate_samples()
     ###########################################
     # classifier_priori = ClassifierPriori(data)
     # print(classifier_priori.truncated_median)
     # print(classifier_priori.mode)
     ###########################################
     classifier_tree = ClassifierDecisionTree(data)
-    tree = classifier_tree.CreateTree(data.generate_samples(),data.key_atrib,0)
-    show_tree(tree)
+    tree = classifier_tree.CreateTree(training_set,data.key_atrib,0)
+    # show_tree(tree)

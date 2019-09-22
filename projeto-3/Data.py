@@ -7,7 +7,6 @@ class Data:
         self.ratings = self.read_ratings("data/ratings.dat")
         self.key_atrib = list(self.atrib.keys())
 
-
     def possible_atrib(self):
         self.atrib["Gender"] = set(["F","M"])
         self.atrib["Age"] = set([1,18,25,35,45,50,56])
@@ -61,7 +60,7 @@ class Data:
         file_rating.close()
         return ratings
     
-    def generate_samples(self):
+    def generate_samples(self, percentage=30):
         samples = []
         for rate in self.ratings:
             new_sample = {}
@@ -72,7 +71,9 @@ class Data:
             new_sample["Year"] = self.movies[rate["MovieID"]]["Year"]
             new_sample["GenderMovie"] = self.movies[rate["MovieID"]]["GenderMovie"]
             samples.append(new_sample)
-        return samples
+        number_of_samples = len(samples)
+        size_test_set = int(percentage/100 * number_of_samples)
+        return samples[:size_test_set], samples[size_test_set:]
 
 
 if __name__ == "__main__":
