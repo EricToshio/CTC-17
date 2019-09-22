@@ -1,10 +1,10 @@
 class Data:
     def __init__(self):
         self.atrib = {}
+        self.possible_atrib()
         self.users = self.read_users("data/users.dat")
         self.movies = self.read_movies("data/movies.dat")
         self.ratings = self.read_ratings("data/ratings.dat")
-        self.possible_atrib()
 
 
     def possible_atrib(self):
@@ -12,6 +12,8 @@ class Data:
         self.atrib["Age"] = set([1,18,25,35,45,50,56])
         self.atrib["Occupation"] = set(range(1,21))
         self.atrib["GenderMovie"] = set(['Action', 'Adventure', 'Animation', "Children's", 'Comedy', 'Crime', 'Documentary', 'Drama', 'Fantasy', 'Film-Noir', 'Horror', 'Musical', 'Mystery', 'Romance', 'Sci-Fi', 'Thriller', 'War', 'Western'])
+        # Adicionado durante a analise
+        self.atrib["Year"] = set()
 
     def read_users(self, path):
         file_user  = open(path, "r")
@@ -38,6 +40,8 @@ class Data:
             movie_ID = int(movie_info_splited[0])
             new_movie["Title"] = movie_info_splited[1]
             new_movie["GenderMovie"] = set(movie_info_splited[2].split("|"))
+            new_movie["Year"] = int(movie_info_splited[1].split("(")[-1][:-1])
+            self.atrib["Year"].add(new_movie["Year"])
             movies[movie_ID] = new_movie
         file_movie.close()
         return movies
@@ -59,4 +63,5 @@ class Data:
 
 if __name__ == "__main__":
     data = Data()
+    print(data.atrib["Year"])
     pass
