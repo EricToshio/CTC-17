@@ -1,4 +1,6 @@
 from Data import Data
+from itertools import permutations
+
 
 class Node:
     def __init__(self, value, is_leaf = False):
@@ -39,7 +41,7 @@ class ClassifierDecisionTree:
     
     def CreateTree(self, samples, atrib, default):
         # Verifica se existe exemplos
-        if len(samples) == 0:
+        if len(samples) == 0 or len(atrib) == 0:
             self.count += 1
             return Node(value=default,is_leaf=True)
         # Verifica se todos os exemplos tem a mesma classificacao
@@ -70,11 +72,8 @@ class ClassifierDecisionTree:
         root = self.tree
         atribInd = 0
         while not root.is_leaf:
-            a = None
-            try:
-                a = sample[self.atribOrder[atribInd]][0]
-            except:
-                a = sample[self.atribOrder[atribInd]]
+            
+            a = sample[self.atribOrder[atribInd]]
             root = root.next[a]
             atribInd += 1
         
@@ -122,16 +121,18 @@ if __name__ == "__main__":
     # print(classifier_priori.truncated_median)
     # print(classifier_priori.mode)
     ###########################################
-    classifier_tree = ClassifierDecisionTree(data)
-    tree = classifier_tree.CreateTree(training_set,data.key_atrib,0)
-    # show_tree(tree)
-    right = wrong = 0
-    for test in test_set:
-        predictedRating = classifier_tree.PredictRating(test)
-        if predictedRating == test["Rating"]:
-            right += 1
-        else:
-            wrong += 1
-    print("correct predicts: {}".format(right))
-    print("wrong predicts: {}".format(wrong))
-    print("hit rate (%): {}".format(right/(right+wrong)*100))
+    atribs = list(permutations(data.key_atrib))
+    for atrib in atribs:
+        classifier_tree = ClassifierDecisionTree(data)
+        tree = classifier_tree.CreateTree(training_set,list(atrib),0)
+        # show_tree(tree)
+        right = wrong = 0
+        for test in test_set:
+            predictedRating = classifier_tree.PredictRating(test)
+            if predictedRating == test["Rating"]:
+                right += 1
+            else:
+                wrong += 1
+        print("correct predicts: {}".format(right))
+        print("wrong predicts: {}".format(wrong))
+        print("hit rate (%): {}".format(right/(right+wrong)*100))

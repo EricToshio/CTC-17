@@ -41,7 +41,7 @@ class Data:
             new_movie["Title"] = movie_info_splited[1]
             genres = list(movie_info_splited[2].split("|"))
             genres[-1] = genres[-1][:-1]
-            new_movie["GenderMovie"] = genres
+            new_movie["GenderMovie"] = genres[0]
             new_movie["Year"] = int(movie_info_splited[1].split("(")[-1][:-1])
             self.atrib["Year"].add(new_movie["Year"])
             movies[movie_ID] = new_movie
