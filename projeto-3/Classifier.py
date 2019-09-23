@@ -31,6 +31,15 @@ class ClassifierPriori:
 
         self.mode = mode
         self.truncated_median = int(total/len(data.ratings))
+        self.average = self.truncated_median
+
+        # sum = 0
+        # for rating in data.ratings:
+        #     sum += rating["Rating"]
+        # self.average = int(sum/len(data.ratings))
+    
+    def PredictRating(self, sample):
+        return self.average
 
 class ClassifierDecisionTree:
     def __init__(self, data):
@@ -115,7 +124,7 @@ def show_tree(tree,intern=0):
 
 if __name__ == "__main__":
     data = Data()
-    training_set, test_set = data.generate_samples()
+    training_set, test_set = data.generate_samples(10)
     ###########################################
     # classifier_priori = ClassifierPriori(data)
     # print(classifier_priori.truncated_median)
