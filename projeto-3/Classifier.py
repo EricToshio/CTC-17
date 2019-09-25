@@ -122,9 +122,26 @@ def show_tree(tree,intern=0):
         for son in tree.next:
             show_tree(tree.next[son],intern+1)
 
+def calculate_kappa(matrix):
+    rows_sum = [0]*5
+    total = 0
+    for i,el in enumerate(matrix):
+        rows_sum[i] = sum(el)
+        total += rows_sum[i]
+    cols_sum = [0]*5
+    for i in range(5):
+        cols_sum[i] = sum([matrix[j][i] for j in range(5)])
+    print(rows_sum)
+    print(cols_sum)
+    p0 = sum([matrix[i][i] for i in range(5)])/total
+    pe = sum([rows_sum[i]*cols_sum[i] for i in range(5)])/(total**2)
+    k = (p0-pe)/(1-pe)
+    print("kappa: ",k)
+    return k
+
 if __name__ == "__main__":
     data = Data()
-    training_set, test_set = data.generate_samples(10)
+    training_set, test_set = data.generate_samples(30)
     ###########################################
     # classifier_priori = ClassifierPriori(data)
     # print(classifier_priori.truncated_median)
@@ -132,11 +149,35 @@ if __name__ == "__main__":
     ###########################################
     atribs = list(permutations(data.key_atrib))
     for atrib in atribs:
+        print(atrib)
+        mat = []
+        for i in range(5):
+            mat.append([0]*5)
         classifier_tree = ClassifierDecisionTree(data)
         tree = classifier_tree.CreateTree(training_set,list(atrib),0)
         # show_tree(tree)
         right = wrong = 0
         for test in test_set:
+            predictedRating = classifier_tree.PredictRating(test)
+            if predictedRating == test["Rating"]:
+                right += 1
+            else:
+                wrong += 1
+            mat[test["Rating"]-1][predictedRating-1] += 1
+        print("matriz de confusao")
+        for i in range(5):
+            print(mat[i])
+        calculate_kappa(mat)
+        print("correct predicts: {}".format(right))
+        print("wrong predicts: {}".format(wrong))
+        print("hit rate (%): {}".format(right/(right+wrong)*100))
+    print("teste >>>>>>>>>>")
+    for atrib in atribs:
+        classifier_tree = ClassifierDecisionTree(data)
+        tree = classifier_tree.CreateTree(training_set,list(atrib),0)
+        # show_tree(tree)
+        right = wrong = 0
+        for test in test_set[-14:]:
             predictedRating = classifier_tree.PredictRating(test)
             if predictedRating == test["Rating"]:
                 right += 1
