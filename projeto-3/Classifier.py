@@ -1,14 +1,11 @@
 from Data import Data
-from itertools import permutations
-
+from itertools import permutations, combinations
 
 class Node:
     def __init__(self, value, is_leaf = False):
         self.val = value
         self.is_leaf = is_leaf
         self.next = {}
-
-
 
 class ClassifierPriori:
     def __init__(self, data):
@@ -33,10 +30,6 @@ class ClassifierPriori:
         self.truncated_median = int(total/len(data.ratings))
         self.average = self.truncated_median
 
-        # sum = 0
-        # for rating in data.ratings:
-        #     sum += rating["Rating"]
-        # self.average = int(sum/len(data.ratings))
     
     def PredictRating(self, sample):
         return self.average
@@ -89,7 +82,6 @@ class ClassifierDecisionTree:
         return root.val
 
     def ChooseAtrib(self,samples,atrib):
-        # TO-DO
         # Escolhe o melhor atributo baseado no exemplos
         return atrib[0]
         
@@ -147,30 +139,51 @@ if __name__ == "__main__":
     # print(classifier_priori.truncated_median)
     # print(classifier_priori.mode)
     ###########################################
-    atribs = list(permutations(data.key_atrib))
-    for atrib in atribs:
-        print(atrib)
-        mat = []
-        for i in range(5):
-            mat.append([0]*5)
-        classifier_tree = ClassifierDecisionTree(data)
-        tree = classifier_tree.CreateTree(training_set,list(atrib),0)
-        # show_tree(tree)
-        right = wrong = 0
-        for test in test_set:
-            predictedRating = classifier_tree.PredictRating(test)
-            if predictedRating == test["Rating"]:
-                right += 1
-            else:
-                wrong += 1
-            mat[test["Rating"]-1][predictedRating-1] += 1
-        print("matriz de confusao")
-        for i in range(5):
-            print(mat[i])
-        calculate_kappa(mat)
-        print("correct predicts: {}".format(right))
-        print("wrong predicts: {}".format(wrong))
-        print("hit rate (%): {}".format(right/(right+wrong)*100))
+    subsets = []
+    for i in range(1,len(data.key_atrib)+1):
+        subsets+=list(map(list, combinations(data.key_atrib, i)))
+    best = None
+    value_best = 0
+
+
+    
+    for subset in subsets:
+        atribs = list(permutations(subset))
+
+        for atrib in atribs:
+            mat = []
+            for i in range(5):
+                mat.append([0]*5)
+            classifier_tree = ClassifierDecisionTree(data)
+            print(list(atrib))
+            tree = classifier_tree.CreateTree(training_set,list(atrib),0)
+            # show_tree(tree)
+            right = 0
+            wrong = 0
+            for test in test_set:
+                predictedRating = classifier_tree.PredictRating(test)
+                if predictedRating == test["Rating"]:
+                    right += 1
+                else:
+                    wrong += 1
+                mat[test["Rating"]-1][predictedRating-1] += 1
+            # print("matriz de confusao")
+            # for i in range(5):
+            #     for j in mat[i]:
+            #         print("{:10d}".format(j),end=' ')
+            #     print()
+            #calculate_kappa(mat)
+            #print("correct predicts: {}".format(right))
+            #print("wrong predicts: {}".format(wrong))
+            print("hit rate (%): {}".format(right/(right+wrong)*100))
+
+            if right/(right+wrong)*100> value_best:
+                value_best = right/(right+wrong)*100
+                best = atrib
+
+    print("BEST",best)
+    print("hit rate",value_best)
+    '''        
     print("teste >>>>>>>>>>")
     for atrib in atribs:
         classifier_tree = ClassifierDecisionTree(data)
@@ -186,3 +199,5 @@ if __name__ == "__main__":
         print("correct predicts: {}".format(right))
         print("wrong predicts: {}".format(wrong))
         print("hit rate (%): {}".format(right/(right+wrong)*100))
+    '''
+    

@@ -9,9 +9,9 @@ class Data:
         self.key_atrib = list(self.atrib.keys())
 
     def possible_atrib(self):
-        # self.atrib["Gender"] = set(["F","M"])
+        self.atrib["Gender"] = set(["F","M"])
         self.atrib["Age"] = set([1,18,25,35,45,50,56])
-        # self.atrib["Occupation"] = set(range(0,21))
+        self.atrib["Occupation"] = set(range(0,21))
         self.atrib["GenderMovie"] = set(['Action', 'Adventure', 'Animation', "Children's", 'Comedy', 'Crime', 'Documentary', 'Drama', 'Fantasy', 'Film-Noir', 'Horror', 'Musical', 'Mystery', 'Romance', 'Sci-Fi', 'Thriller', 'War', 'Western'])
         # Adicionado durante a analise
         self.atrib["Year"] = set()
