@@ -48,7 +48,7 @@ class ClassifierDecisionTree:
         self.tree = None
         self.atribOrder = []
     
-    def CreateTree(self, samples, atrib, default):
+    def CreateTree(self, samples, atrib, default=0):
         # Verifica se existe exemplos
         if len(samples) == 0 or len(atrib) == 0:
             self.count += 1
@@ -131,8 +131,8 @@ def calculate_kappa(matrix):
     cols_sum = [0]*5
     for i in range(5):
         cols_sum[i] = sum([matrix[j][i] for j in range(5)])
-    print(rows_sum)
-    print(cols_sum)
+    #print(rows_sum)
+    #print(cols_sum)
     p0 = sum([matrix[i][i] for i in range(5)])/total
     pe = sum([rows_sum[i]*cols_sum[i] for i in range(5)])/(total**2)
     k = (p0-pe)/(1-pe)
@@ -140,49 +140,81 @@ def calculate_kappa(matrix):
     return k
 
 if __name__ == "__main__":
+    # Obtem os dados
     data = Data()
+    # Seleciona os atributos a serem utilizados
+    atrib = ["Age","Year","GenderMovie"]
+    # Gera o subconjuntos de treinamento e teste
     training_set, test_set = data.generate_samples(30)
-    ###########################################
-    # classifier_priori = ClassifierPriori(data)
-    # print(classifier_priori.truncated_median)
-    # print(classifier_priori.mode)
-    ###########################################
-    atribs = list(permutations(data.key_atrib))
-    for atrib in atribs:
-        print(atrib)
-        mat = []
-        for i in range(5):
-            mat.append([0]*5)
-        classifier_tree = ClassifierDecisionTree(data)
-        tree = classifier_tree.CreateTree(training_set,list(atrib),0)
-        # show_tree(tree)
-        right = wrong = 0
-        for test in test_set:
-            predictedRating = classifier_tree.PredictRating(test)
-            if predictedRating == test["Rating"]:
-                right += 1
-            else:
-                wrong += 1
-            mat[test["Rating"]-1][predictedRating-1] += 1
-        print("matriz de confusao")
-        for i in range(5):
-            print(mat[i])
-        calculate_kappa(mat)
-        print("correct predicts: {}".format(right))
-        print("wrong predicts: {}".format(wrong))
-        print("hit rate (%): {}".format(right/(right+wrong)*100))
-    print("teste >>>>>>>>>>")
-    for atrib in atribs:
-        classifier_tree = ClassifierDecisionTree(data)
-        tree = classifier_tree.CreateTree(training_set,list(atrib),0)
-        # show_tree(tree)
-        right = wrong = 0
-        for test in test_set[-14:]:
-            predictedRating = classifier_tree.PredictRating(test)
-            if predictedRating == test["Rating"]:
-                right += 1
-            else:
-                wrong += 1
-        print("correct predicts: {}".format(right))
-        print("wrong predicts: {}".format(wrong))
-        print("hit rate (%): {}".format(right/(right+wrong)*100))
+    #######################################################
+    print("CLASSIFICADOR A PRIORI")
+    # Gera classificador a priori
+    classifier_priori = ClassifierPriori(data)
+    # Analise do classificador a priori
+    mat = []
+    for i in range(5):
+        mat.append([0]*5)
+    right = wrong = 0
+    for test in test_set:
+        predictedRating = classifier_priori.PredictRating(test)
+        if predictedRating == test["Rating"]:
+            right += 1
+        else:
+            wrong += 1
+        mat[test["Rating"]-1][predictedRating-1] += 1
+    print("matriz de confusao")
+    for i in range(5):
+        print(mat[i])
+    calculate_kappa(mat)
+    print("correct predicts: {}".format(right))
+    print("wrong predicts: {}".format(wrong))
+    print("hit rate (%): {}".format(right/(right+wrong)*100))
+    print("TESTE COM OS NOVOS DADOS")
+    right = wrong = 0
+    for test in test_set[-14:]:
+        predictedRating = classifier_priori.PredictRating(test)
+        if predictedRating == test["Rating"]:
+            right += 1
+        else:
+            wrong += 1
+    print("correct predicts: {}".format(right))
+    print("wrong predicts: {}".format(wrong))
+    print("hit rate (%): {}".format(right/(right+wrong)*100))
+    
+
+    #######################################################
+    print("********************************************")
+    print("CLASSIFICADOR POR MEIO DA ARVORE DE DECISAO")
+    # Gera o classificador de arvore de decisao
+    classifier_tree = ClassifierDecisionTree(data)
+    # Analise do da arvore de decisao
+    mat = []
+    for i in range(5):
+        mat.append([0]*5)
+    classifier_tree.CreateTree(training_set,atrib)
+    right = wrong = 0
+    for test in test_set:
+        predictedRating = classifier_tree.PredictRating(test)
+        if predictedRating == test["Rating"]:
+            right += 1
+        else:
+            wrong += 1
+        mat[test["Rating"]-1][predictedRating-1] += 1
+    print("matriz de confusao")
+    for i in range(5):
+        print(mat[i])
+    calculate_kappa(mat)
+    print("correct predicts: {}".format(right))
+    print("wrong predicts: {}".format(wrong))
+    print("hit rate (%): {}".format(right/(right+wrong)*100))
+    print("TESTE COM OS NOVOS DADOS")
+    right = wrong = 0
+    for test in test_set[-14:]:
+        predictedRating = classifier_tree.PredictRating(test)
+        if predictedRating == test["Rating"]:
+            right += 1
+        else:
+            wrong += 1
+    print("correct predicts: {}".format(right))
+    print("wrong predicts: {}".format(wrong))
+    print("hit rate (%): {}".format(right/(right+wrong)*100))
