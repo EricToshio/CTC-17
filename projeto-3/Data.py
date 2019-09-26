@@ -47,6 +47,7 @@ class Data:
             if len(genres_splited) > 1:
                 for genre in genres_splited:
                     n = {}
+                    n["Title"] = new_movie["Title"]
                     n["Year"] = new_movie["Year"]
                     n["GenderMovie"] = genre
                     if self.expanded_movies.get(movie_ID):
@@ -98,6 +99,26 @@ class Data:
         number_of_samples = len(samples)
         size_test_set = int(percentage/100 * number_of_samples)
         return samples[:-size_test_set], samples[-size_test_set:]
+    
+    def generate_sample_with_age(self, age):
+        samples = []
+        for movie_id in self.movies:
+            if self.expanded_movies.get(movie_id):
+                for movie in self.expanded_movies[movie_id]:
+                    new_sample = {}
+                    new_sample["Age"] = age
+                    new_sample["Title"] = movie["Title"]
+                    new_sample["Year"] = movie["Year"]
+                    new_sample["GenderMovie"] = movie["GenderMovie"]
+                    samples.append(new_sample)
+            else:
+                new_sample = {}
+                new_sample["Age"] = age
+                new_sample["Title"] = movie["Title"]
+                new_sample["Year"] = self.movies[movie_id]["Year"]
+                new_sample["GenderMovie"] = self.movies[movie_id]["GenderMovie"]
+                samples.append(new_sample)
+        return samples
 
 
 if __name__ == "__main__":
