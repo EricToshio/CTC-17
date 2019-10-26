@@ -1,0 +1,6 @@
+WUMPUS = -100 - 0.1
+PIT = -50 - 0.1
+GOLD = 100 - 0.1
+MOVE = -0.1
+COLISION = -1
+RESET = MOVE
