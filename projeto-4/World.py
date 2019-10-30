@@ -68,3 +68,8 @@ class World:
             for j in range(self.dimensions[1]):
                 states.append((i,j))
         return states
+    
+    def need_restart(self, state):
+        if state in self.wumpusList or state in self.goldList or state in self.pitList:
+            return True
+        return False

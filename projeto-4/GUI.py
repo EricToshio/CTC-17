@@ -66,8 +66,9 @@ def drawWorldWithPolicy(policy=[], wumpusList=[], pitList=[], goldList=[]):
     
     # add arrows positions:
     for position,action in policy:
-        arrow = createArrows(position, action)
-        arrowPatches.append(arrow)
+        if position not in wumpusList and position not in pitList and position not in goldList:
+            arrow = createArrows(position, action)
+            arrowPatches.append(arrow)
     
     # add legend:
     p = (0.3,0.1)

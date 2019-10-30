@@ -31,5 +31,13 @@ class Utility:
         if maxDiff <= self.convergenceCriterium:
             return True
         return False
+    
+    def showUtility(self):
+        for i in range(self.dimension[0]):
+            for j in range(self.dimension[1]):
+                print("{:7.2f}".format(self.utilityMatrix[i][j]), end=' ')
+            print()
+        print('*******************************')
+
 
 

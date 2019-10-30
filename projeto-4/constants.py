@@ -1,0 +1,1 @@
+discountFactor = 0.999999

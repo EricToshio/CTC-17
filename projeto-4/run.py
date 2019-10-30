@@ -2,6 +2,7 @@ import World
 import Utility
 import actions
 import actionProbability
+from constants import discountFactor
 import GUI
 
 def maxFunc(pair):
@@ -50,13 +51,16 @@ def runRL(discountFactor = 0.7):
                     nextState = world.getNextState(state, actionToNewState)
                     sigmaSum += p*utility.getUtilityOfState(nextState)
                 sigmaSum *= discountFactor
+                if world.need_restart(state):
+                    sigmaSum = 0 
                 sigmaSum += world.getReward(state, action)
                 tempUtilities.append(sigmaSum)
             maxUtility = max(tempUtilities)
             utility.updateUtility(state, maxUtility)
+        utility.showUtility()
         convergence = utility.updateUtilityMatrixIteration()
     policy = determinePolicy(utility)
     GUI.drawWorldWithPolicy(policy, world.wumpusList, world.pitList, world.goldList)
 
 # qual eh o fator de desconto?
-runRL(0.9)
+runRL(discountFactor)
