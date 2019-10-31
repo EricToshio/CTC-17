@@ -10,14 +10,13 @@ class World:
         self.goldList = []
         self.__addGold()
 
-    def getReward(self, state, action):
-        currentReward = self.__getRewardOfCurrentState(state)
+    def getReward(self, state, nextState, restart = False):
+
+        currentReward = self.__getRewardOfCurrentState(nextState)
         # next state is a wall
-        if not self.__isPossibleMove(state, action):
+        if not restart and state == nextState:
             return currentReward + rewards.COLISION
-        if self.__nextStateIsEmpty(state, action):
-            return currentReward + rewards.MOVE
-        return currentReward + rewards.MOVE + rewards.RESET 
+        return currentReward + rewards.MOVE
 
     def __addWumpus(self):
         self.wumpusList.append((1,0))
@@ -55,7 +54,6 @@ class World:
         if state in self.pitList:
             return rewards.PIT
         return 0 
-        # [TODO] verify if this is correct
     
     def getNextState(self, state, action):
         if self.__isPossibleMove(state, action):

@@ -1,3 +1,4 @@
+
 class Utility:
     def __init__(self):
         self.dimension = (4,8)
@@ -8,7 +9,7 @@ class Utility:
     def __fillUtilityMatrix(self):
         # default value = 0
         matrix = []
-        for i in range(self.dimension[0]):
+        for _ in range(self.dimension[0]):
             matrix.append([0]*self.dimension[1])
         return matrix
     
@@ -31,13 +32,19 @@ class Utility:
         if maxDiff <= self.convergenceCriterium:
             return True
         return False
+
+    def getAllUtilitys(self):
+        return self.utilityMatrix
+
+    def getDimesion(self):
+        return self.dimension
     
     def showUtility(self):
         for i in range(self.dimension[0]):
             for j in range(self.dimension[1]):
                 print("{:7.2f}".format(self.utilityMatrix[i][j]), end=' ')
             print()
-        print('*******************************')
+        print('*'*64)
 
 
 

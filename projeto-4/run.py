@@ -27,9 +27,10 @@ def determinePolicy(utility):
         for action in actions.actionsArray:
             probabilities = actionProbability.defineProbabilityArray(action)
             sigmaSum = 0
+
             for actionToNewState, p in probabilities:
                 nextState = world.getNextState(state, actionToNewState)
-                sigmaSum += p*utility.getUtilityOfState(nextState)
+                sigmaSum += p*(world.getReward(state, nextState)+utility.getUtilityOfState(nextState)*discountFactor)
             tempUtilities.append((action,sigmaSum))
         bestActions = maxActions(state, tempUtilities)
         policy.extend(bestActions)
@@ -43,19 +44,25 @@ def runRL(discountFactor = 0.7):
     convergence = False
     while not convergence:
         for state in states:
-            tempUtilities = []
-            for action in actions.actionsArray:
-                probabilities = actionProbability.defineProbabilityArray(action)
-                sigmaSum = 0
-                for actionToNewState, p in probabilities:
-                    nextState = world.getNextState(state, actionToNewState)
-                    sigmaSum += p*utility.getUtilityOfState(nextState)
-                sigmaSum *= discountFactor
-                if world.need_restart(state):
-                    sigmaSum = 0 
-                sigmaSum += world.getReward(state, action)
-                tempUtilities.append(sigmaSum)
-            maxUtility = max(tempUtilities)
+            if world.need_restart(state):
+                maxUtility = 0
+                dimension = utility.getDimesion()
+                utilitys = utility.getAllUtilitys()
+                for i in range(dimension[0]):
+                    for j in range(dimension[1]):
+                        maxUtility +=  world.getReward(state, (i,j), restart=True) + discountFactor*utilitys[i][j] 
+                maxUtility /= (dimension[0]*dimension[1])
+            else:
+                tempUtilities = []
+                for action in actions.actionsArray:
+                    probabilities = actionProbability.defineProbabilityArray(action)
+                    sigmaSum = 0
+
+                    for actionToNewState, p in probabilities:
+                        nextState = world.getNextState(state, actionToNewState)
+                        sigmaSum += p*(world.getReward(state, nextState)+utility.getUtilityOfState(nextState)*discountFactor)
+                    tempUtilities.append(sigmaSum)
+                maxUtility = max(tempUtilities)
             utility.updateUtility(state, maxUtility)
         utility.showUtility()
         convergence = utility.updateUtilityMatrixIteration()
