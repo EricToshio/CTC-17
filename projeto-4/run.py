@@ -2,8 +2,8 @@ import World
 import Utility
 import actions
 import actionProbability
-from constants import discountFactor
 import GUI
+import sys
 
 def maxFunc(pair):
     return pair[1]
@@ -16,7 +16,7 @@ def maxActions(state, utilities):
             result.append((state, i[0]))
     return result
 
-def determinePolicy(utility):
+def determinePolicy(utility, discountFactor):
     world = World.World()
     states = world.getStatesArray()
 
@@ -40,6 +40,8 @@ def runRL(discountFactor = 0.7):
     world = World.World()
     states = world.getStatesArray()
     utility = Utility.Utility()
+    print("Valores utilidades obtidos a cada iteração")
+    print('*'*64)
 
     convergence = False
     while not convergence:
@@ -66,8 +68,12 @@ def runRL(discountFactor = 0.7):
             utility.updateUtility(state, maxUtility)
         utility.showUtility()
         convergence = utility.updateUtilityMatrixIteration()
-    policy = determinePolicy(utility)
+    policy = determinePolicy(utility, discountFactor)
     GUI.drawWorldWithPolicy(policy, world.wumpusList, world.pitList, world.goldList)
 
-# qual eh o fator de desconto?
-runRL(discountFactor)
+
+if __name__ == "__main__":
+    if len(sys.argv) >= 2:
+        runRL(float(sys.argv[1]))
+    else:
+        runRL(0.99)
